@@ -1,12 +1,12 @@
 import path from "path";
 import multer, { FileFilterCallback } from "multer";
 import { nanoid } from "nanoid";
-import { PRODUCTS_IMAGE_PATH } from "../server";
+import { IMAGES_PATH } from "../server";
 import { Request } from "express";
 
 const productStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(PRODUCTS_IMAGE_PATH, "products"));
+    cb(null, path.join(IMAGES_PATH, "products"));
   },
 
   filename: (req, file, cb) => {
@@ -18,7 +18,7 @@ const productStorage = multer.diskStorage({
 
 const profileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(PRODUCTS_IMAGE_PATH, "profiles"));
+    cb(null, path.join(IMAGES_PATH, "profiles"));
   },
 
   filename: (req, file, cb) => {
