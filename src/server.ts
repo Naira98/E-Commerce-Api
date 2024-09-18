@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import { userPayload } from "./schemas/userSchemas";
 import authRoutes from "./routes/auth";
 import productRoutes from "./routes/products";
+import cartRoutes from "./routes/cart";
 
 declare module "express" {
   interface Request {
@@ -22,6 +23,7 @@ app.use("/assets", express.static(IMAGES_PATH));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/cart", cartRoutes);
 
 mongoose
   .connect(config.mongo.url, { retryWrites: true, w: "majority" })

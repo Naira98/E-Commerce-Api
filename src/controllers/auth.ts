@@ -6,6 +6,7 @@ import Token from "../models/Token";
 import jwt from "jsonwebtoken";
 import config from "../config/config";
 import { userPayload } from "../schemas/userSchemas";
+import Cart from "../models/Cart";
 
 export const reigster = async (
   req: Request,
@@ -28,7 +29,16 @@ export const reigster = async (
       phone,
       image,
     });
-    const addedUser = await newUser.save();
+    
+    const newCart = new Cart({
+      userId: newUser._id,
+      cart: [],
+    });
+
+    const [addedUser] = await Promise.all([
+      await newUser.save(),
+      await newCart.save(),
+    ]);
 
     return res.status(201).json(addedUser);
   } catch (error) {
@@ -54,7 +64,7 @@ export const login = async (
 
     await Token.findOneAndUpdate(
       { userId: user._id },
-      { $set: { userId: user._id ,refreshToken } },
+      { $set: { userId: user._id, refreshToken } },
       { upsert: true }
     );
 
@@ -94,7 +104,7 @@ export const logout = async (
 ) => {
   try {
     await Token.findOneAndDelete({ userId: req.user?.userId });
-    return res.status(200).json({message: "Logged Out"})
+    return res.status(200).json({ message: "Logged Out" });
   } catch (error) {
     console.log(error);
     next(error);
