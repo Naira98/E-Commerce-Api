@@ -13,10 +13,11 @@ export const addToCart = async (
 
     const product = await Product.findById(productId);
     if (!product) return res.status(404).json({ message: "Invalid product" });
+    
+    if (quantity > product.quantity)
+      return res.status(400).json({ message: "This quantity not available" });
 
-    const cart = await Cart.findOne({ userId: req.user?.userId }).select(
-      "-cretedAt -updatedAt"
-    );
+    const cart = await Cart.findOne({ userId: req.user?.userId });
     let savedCart: ICartModel;
 
     if (cart) {
@@ -55,6 +56,11 @@ export const changeQuantity = async (
 ) => {
   try {
     const { productId, quantity } = req.body;
+
+    const product = await Product.findById(productId);
+    if (!product) return res.status(404).json({ message: "Invalid product" });
+    if (quantity > product.quantity)
+      return res.status(400).json({ message: "This quantity not available" });
 
     const cart = await Cart.findOne({ userId: req.user?.userId });
     if (!cart) return res.status(404).json({ message: "Cart not found" });
