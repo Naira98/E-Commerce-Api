@@ -34,6 +34,7 @@ const productSchema: Schema = new Schema(
     salePrice: {
       type: Number,
       default: 0,
+      min: [0, "salePrice must be greater than 0"]
     },
     postedBy: {
       type: Schema.Types.ObjectId,
