@@ -50,9 +50,9 @@ export const addToCart = async (
       savedCart = await newCart.save();
     }
     return res.status(201).json(savedCart);
-  } catch (err) {
-    console.log(err);
-    next(err);
+  } catch (error) {
+    console.log(error);
+    next(error);
   }
 };
 
@@ -84,9 +84,9 @@ export const changeQuantity = async (
     const updatedCart = await cart.save();
 
     return res.status(200).json(updatedCart);
-  } catch (err) {
-    console.log(err);
-    next(err);
+  } catch (error) {
+    console.log(error);
+    next(error);
   }
 };
 
@@ -110,9 +110,9 @@ export const deleteProduct = async (
     const updatedCart = await cart.save();
 
     return res.status(200).json(updatedCart);
-  } catch (err) {
-    console.log(err);
-    next(err);
+  } catch (error) {
+    console.log(error);
+    next(error);
   }
 };
 
@@ -139,9 +139,9 @@ export const getCartDetailsAndTotals = async (
     total = total === 0 ? 0 : total + DELIVERY_FEES;
 
     return res.status(200).json({ cart, subtotal, total });
-  } catch (err) {
-    console.log(err);
-    next(err);
+  } catch (error) {
+    console.log(error);
+    next(error);
   }
 };
 
@@ -159,9 +159,9 @@ export const addMoney = async (
       $inc: { wallet: Number(amount) },
     });
     return res.status(200).json({ message: "Money added successfully" });
-  } catch (err) {
-    console.log(err);
-    next(err);
+  } catch (error) {
+    console.log(error);
+    next(error);
   }
 };
 
@@ -237,8 +237,8 @@ export const checkout = async (
         .json({ message: `Checkout successfully done, total: $${total}` });
     });
     session.endSession();
-  } catch (err) {
-    console.log(err);
-    next(err);
+  } catch (error) {
+    console.log(error);
+    next(error);
   }
 };

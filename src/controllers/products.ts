@@ -69,11 +69,6 @@ export const deleteProduct = async (
   try {
     const { productId } = req.params;
 
-    // const product = await Product.findOne({
-    //   _id: productId,
-    //   postedBy: req.user?.userId,
-    // });
-
     const product = await Product.findById(productId);
     if (!product) return res.status(404).json({ message: "Product not found" });
 
@@ -122,7 +117,7 @@ export const findProduct = async (
 };
 
 const deleteImage = (image: string) => {
-  fs.unlink(path.join(IMAGES_PATH, image), (err) => {
-    if (err) console.log(err);
+  fs.unlink(path.join(IMAGES_PATH, image), (error) => {
+    if (error) console.log(error);
   });
 };
