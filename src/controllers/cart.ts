@@ -29,6 +29,11 @@ export const addToCart = async (
       );
 
       if (cartProductIndex >= 0) {
+        if (
+          cart.products[cartProductIndex].quantity + Number(quantity) >
+          product.quantity
+        )
+          return res.status(400).json({ message: "Quantity unavailable" });
         cart.products[cartProductIndex].quantity += Number(quantity);
       } else {
         cart.products.push({
