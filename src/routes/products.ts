@@ -9,7 +9,10 @@ import {
   updateProduct,
 } from "../controllers/products";
 import { validateData } from "../middlewares/validation";
-import { addProductSchema } from "../schemas/productSchemas";
+import {
+  addProductSchema,
+  updateProductSchema,
+} from "../schemas/productSchemas";
 
 const router = express.Router();
 
@@ -26,7 +29,8 @@ router.post(
 router.patch(
   "/:productId",
   isAuth,
-  validateData(addProductSchema),
+  validateData(updateProductSchema),
+  uploadProduct.single("picture"),
   updateProduct
 );
 
