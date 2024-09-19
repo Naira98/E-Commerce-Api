@@ -1,9 +1,8 @@
 import fs from "fs";
 import path from "path";
 import { NextFunction, Request, Response } from "express";
-import Product from "../models/Product";
 import { IMAGES_PATH } from "../server";
-import mongoose from "mongoose";
+import Product from "../models/Product";
 
 export const addProduct = async (
   req: Request,

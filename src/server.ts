@@ -8,9 +8,9 @@ import cartRoutes from "./routes/cart";
 import { notFound } from "./controllers/not-found";
 import { errorHandler } from "./middlewares/errors";
 
-const app = express();
-
 export const IMAGES_PATH = path.join(__dirname, "..", "public");
+
+const app = express();
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());

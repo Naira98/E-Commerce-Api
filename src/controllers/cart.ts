@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
+import mongoose from "mongoose";
+import { DELIVERY_FEES, TAX } from "../lib/contants";
 import Product, { IProductModel } from "../models/Product";
 import Cart, { ICartModel } from "../models/Cart";
-import { DELIVERY_FEES, TAX } from "../lib/contants";
-import mongoose from "mongoose";
 import User from "../models/User";
 
 export const addToCart = async (

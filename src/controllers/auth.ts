@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from "express";
-import bcrypt from "bcrypt";
-import User, { IUserModel } from "../models/User";
-import { generateAccessToken, generateRefreshToken } from "../lib/helpers";
-import Token from "../models/Token";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 import config from "../config/config";
+import { generateAccessToken, generateRefreshToken } from "../lib/helpers";
 import { userPayload } from "../schemas/userSchemas";
+import Token from "../models/Token";
+import User, { IUserModel } from "../models/User";
 import Cart from "../models/Cart";
 
 export const reigster = async (
