@@ -29,8 +29,8 @@ router.post(
 router.patch(
   "/:productId",
   isAuth,
-  validateData(updateProductSchema),
   uploadProduct.single("picture"),
+  validateData(updateProductSchema),
   updateProduct
 );
 

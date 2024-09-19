@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcrypt";
-import User from "../models/User";
+import User, { IUserModel } from "../models/User";
 import { generateAccessToken, generateRefreshToken } from "../lib/helpers";
 import Token from "../models/Token";
 import jwt from "jsonwebtoken";
@@ -39,6 +39,12 @@ export const reigster = async (
       await newUser.save(),
       await newCart.save(),
     ]);
+
+    delete (
+      addedUser as Omit<IUserModel, "password"> & {
+        password?: IUserModel["password"];
+      }
+    ).password;
 
     return res.status(201).json(addedUser);
   } catch (error) {
