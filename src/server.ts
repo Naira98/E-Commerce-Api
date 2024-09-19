@@ -2,16 +2,9 @@ import path from "path";
 import express from "express";
 import config from "./config/config";
 import mongoose from "mongoose";
-import { userPayload } from "./schemas/userSchemas";
 import authRoutes from "./routes/auth";
 import productRoutes from "./routes/products";
 import cartRoutes from "./routes/cart";
-
-declare module "express" {
-  interface Request {
-    user?: userPayload;
-  }
-}
 
 const app = express();
 

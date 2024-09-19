@@ -2,6 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import Product, { IProductModel } from "../models/Product";
 import Cart, { ICartModel } from "../models/Cart";
 import { DELIVERY_FEES, TAX } from "../lib/contants";
+import mongoose from "mongoose";
+import User from "../models/User";
 
 export const addToCart = async (
   req: Request,
@@ -13,7 +15,7 @@ export const addToCart = async (
 
     const product = await Product.findById(productId);
     if (!product) return res.status(404).json({ message: "Invalid product" });
-    
+
     if (quantity > product.quantity)
       return res.status(400).json({ message: "This quantity not available" });
 
@@ -119,7 +121,6 @@ export const getCartDetailsAndTotals = async (
       "products.product"
     );
     if (!cart) return res.status(404).json({ message: "Cart not found" });
-    console.log(cart);
 
     let subtotal = 0;
     cart.products.map((p) => {
@@ -129,7 +130,8 @@ export const getCartDetailsAndTotals = async (
         : subtotal + Number(product.price) * Number(p.quantity);
     });
     subtotal = Math.round(subtotal);
-    const total = Math.round(subtotal + DELIVERY_FEES + subtotal * TAX);
+    let total = Math.round(subtotal + subtotal * TAX);
+    total = total === 0 ? 0 : total + DELIVERY_FEES;
 
     return res.status(200).json({ cart, subtotal, total });
   } catch (err) {
@@ -137,13 +139,99 @@ export const getCartDetailsAndTotals = async (
     next(err);
   }
 };
+
+export const addMoney = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { amount } = req.body;
+    if (amount < 0)
+      return res.status(400).json({ message: "You ca't add negative amount" });
+
+    await User.findByIdAndUpdate(req.user?.userId, {
+      $inc: { wallet: Number(amount) },
+    });
+    return res.status(200).json({ message: "Money added successfully" });
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+};
+
 export const checkout = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const cart = await Cart.findOne({ userId: req.user?.userId });
+    const session = await mongoose.startSession();
+    await session.withTransaction(async () => {
+      /* CART */
+      const cart = await Cart.findOne({ userId: req.user?.userId }).session(
+        session
+      );
+      if (!cart) return res.status(404).json({ message: "Cart not found" });
+
+      /* PRODUCTS */
+      let subtotal = 0;
+      await Promise.all(
+        cart.products.map(async (cartProd) => {
+          /* Get Product */
+          const product = await Product.findById(cartProd.product).session(
+            session
+          );
+          if (!product)
+            return res.status(404).json({ message: "Product not found" });
+
+          /* Check Product quantity */
+          if (cartProd.quantity > product.quantity)
+            return res.status(406).json({
+              message: `The quantity of ${product.name} not available`,
+            });
+
+          /* Calculate subtotal */
+          subtotal = product.salePrice
+            ? subtotal + Number(product.salePrice) * Number(cartProd.quantity)
+            : subtotal + Number(product.price) * Number(cartProd.quantity);
+        })
+      );
+
+      let total = Math.round(subtotal + subtotal * TAX);
+      total = total ? total + DELIVERY_FEES : 0;
+
+      /* USER */
+      const user = await User.findById(req.user?.userId).session(session);
+      if (!user) return res.status(404).json({ message: "User not found" });
+
+      if (user.wallet < total)
+        return res.status(400).json({
+          message: `No enough money. You need $${total} to complete your order`,
+        });
+
+      /* UPDATES */
+      user.wallet -= total;
+      const products = cart.products;
+      cart.products = [];
+
+      await Promise.all([
+        user.save({ session }),
+        cart.save({ session }),
+
+        ...products.map((p) =>
+          Product.updateOne(
+            { _id: p.product },
+            { $inc: { quantity: -p.quantity } },
+            { session }
+          ).session(session)
+        ),
+      ]);
+      return res
+        .status(200)
+        .json({ message: `Checkout successfully done, total: $${total}` });
+    });
+    session.endSession();
   } catch (err) {
     console.log(err);
     next(err);

@@ -29,7 +29,7 @@ export const reigster = async (
       phone,
       image,
     });
-    
+
     const newCart = new Cart({
       userId: newUser._id,
       cart: [],

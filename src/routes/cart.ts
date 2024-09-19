@@ -1,6 +1,6 @@
 import express from "express";
 import { isAuth } from "../middlewares/isAuth";
-import { addToCart, changeQuantity, checkout, deleteProduct, getCartDetailsAndTotals as getCartDetailsAndTotals } from "../controllers/cart";
+import { addToCart, changeQuantity, checkout, deleteProduct, getCartDetailsAndTotals, addMoney } from "../controllers/cart";
 
 const router = express.Router();
 
@@ -14,6 +14,8 @@ router.delete("/", isAuth, deleteProduct);
 
 router.get("/", isAuth, getCartDetailsAndTotals);
 
-router.post('/checkout', isAuth, checkout)
+router.post("/money", isAuth, addMoney);
+
+router.post('/checkout', isAuth, checkout);
 
 export default router;

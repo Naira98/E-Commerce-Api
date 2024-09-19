@@ -10,7 +10,7 @@ export const addProduct = async (
   next: NextFunction
 ) => {
   try {
-    const { name, price, image, quantity, salePrice } = req.body;
+    const { name, price, image, quantity, salePrice = 0 } = req.body;
     const newProduct = new Product({
       name,
       price,

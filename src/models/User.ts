@@ -7,6 +7,7 @@ export interface IUser {
   password: string;
   phone: string;
   image: string;
+  wallet: number;
 }
 
 export interface IUserModel extends IUser, Document<ObjectId> {}
@@ -37,6 +38,11 @@ const userSchema: Schema = new Schema(
     image: {
       type: String,
       default: "",
+    },
+    wallet: {
+      type: Number,
+      default: 0,
+      min: [0, "Wallet ca't be less than 0"],
     },
   },
   { timestamps: true }
