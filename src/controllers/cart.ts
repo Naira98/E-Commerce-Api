@@ -180,6 +180,14 @@ export const checkout = async (
       if (!cart) return res.status(404).json({ message: "Cart not found" });
 
       /* PRODUCTS */
+
+      if (cart.products.length === 0)
+        return res
+          .status(400)
+          .json({
+            message: "Your cart is empty, Go shopping first before checking out.",
+          });
+          
       let subtotal = 0;
       await Promise.all(
         cart.products.map(async (cartProd) => {
