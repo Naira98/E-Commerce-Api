@@ -5,6 +5,8 @@ import mongoose from "mongoose";
 import authRoutes from "./routes/auth";
 import productRoutes from "./routes/products";
 import cartRoutes from "./routes/cart";
+import { notFound } from "./controllers/not-found";
+import { errorHandler } from "./middlewares/errors";
 
 const app = express();
 
@@ -17,6 +19,9 @@ app.use("/assets", express.static(IMAGES_PATH));
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);
+
+app.use(notFound);
+app.use(errorHandler);
 
 mongoose
   .connect(config.mongo.url, { retryWrites: true, w: "majority" })
