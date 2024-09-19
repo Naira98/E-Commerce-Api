@@ -8,14 +8,27 @@ import {
   findProduct,
   updateProduct,
 } from "../controllers/products";
+import { validateData } from "../middlewares/validation";
+import { addProductSchema } from "../schemas/productSchemas";
 
 const router = express.Router();
 
 /* /api/products */
 
-router.post("/", isAuth, uploadProduct.single("picture"), addProduct);
+router.post(
+  "/",
+  isAuth,
+  uploadProduct.single("picture"),
+  validateData(addProductSchema),
+  addProduct
+);
 
-router.patch("/:productId", isAuth, updateProduct);
+router.patch(
+  "/:productId",
+  isAuth,
+  validateData(addProductSchema),
+  updateProduct
+);
 
 router.delete("/:productId", isAuth, deleteProduct);
 
