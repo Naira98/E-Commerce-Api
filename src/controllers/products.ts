@@ -3,6 +3,7 @@ import path from "path";
 import { NextFunction, Request, Response } from "express";
 import Product from "../models/Product";
 import { IMAGES_PATH } from "../server";
+import mongoose from "mongoose";
 
 export const addProduct = async (
   req: Request,
@@ -11,6 +12,12 @@ export const addProduct = async (
 ) => {
   try {
     const { name, price, image, quantity, salePrice = 0 } = req.body;
+
+    if (salePrice > price)
+      return res
+        .status(400)
+        .json({ message: "Sale price can't be more than regular price" });
+
     const newProduct = new Product({
       name,
       price,
@@ -33,6 +40,7 @@ export const updateProduct = async (
 ) => {
   try {
     const { productId } = req.params;
+
     const product = await Product.findById(productId);
     if (!product) return res.status(404).json({ message: "Product not found" });
 
@@ -40,6 +48,12 @@ export const updateProduct = async (
       return res.status(403).json({ message: "Forbidden" });
 
     product.set(req.body);
+
+    if (product.salePrice > product.price)
+      return res
+        .status(400)
+        .json({ message: "Sale price can't be more than regular price" });
+
     const updatedProduct = await product.save();
     return res.status(200).json(updatedProduct);
   } catch (error) {
