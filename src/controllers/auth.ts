@@ -8,7 +8,7 @@ import Token from "../models/Token";
 import User, { IUserModel } from "../models/User";
 import Cart from "../models/Cart";
 
-export const reigster = async (
+export const register = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -16,7 +16,7 @@ export const reigster = async (
   try {
     const { firstName, lastName, email, password, phone, image } = req.body;
     const user = await User.findOne({ email });
-    if (user) res.status(400).json({ message: "Email already exists" });
+    if (user) return res.status(400).json({ message: "Email already exists" });
 
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);

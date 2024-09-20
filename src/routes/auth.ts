@@ -1,7 +1,7 @@
 import express from "express";
 import { uploadProfile } from "../config/multer";
 import { isAuth } from "../middlewares/isAuth";
-import { login, logout, refresh, reigster } from "../controllers/auth";
+import { login, logout, refresh, register } from "../controllers/auth";
 import { validateData } from "../middlewares/validation";
 import {
   loginSchema,
@@ -17,7 +17,7 @@ router.post(
   "/register",
   uploadProfile.single("picture"),
   validateData(registerSchema),
-  reigster
+  register
 );
 
 router.post("/login", validateData(loginSchema), login);
