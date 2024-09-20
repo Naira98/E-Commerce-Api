@@ -7,7 +7,6 @@ The **Product and Cart APIs** provide endpoints for managing product catalogs an
 - **TypeScript** (Static typing for JavaScript)
 - **Node.js** (Server runtime)
 - **Express.js** (Framework for building APIs)
-- **MongoDB** (Database for storing product and cart information)
 - **Mongoose** (MongoDB object modeling for Node.js)
 - **Zod** (Schema validation for request data)
 - **Multer** (Middleware for handling multipart/form-data)
