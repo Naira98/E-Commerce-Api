@@ -24,7 +24,7 @@ app.use(notFound);
 app.use(errorHandler);
 
 mongoose
-  .connect(config.mongo.url, { retryWrites: true, w: "majority" })
+  .connect(config.mongo.url)
   .then(() => console.log("MongoDB connected"))
   .catch((error) => console.log(error));
 
